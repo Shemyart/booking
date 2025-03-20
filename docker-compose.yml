@@ -1,0 +1,70 @@
+version: "3.2"
+services:
+  ####################################################################################################
+  # booking-app (PHP)
+  ####################################################################################################
+  booking-app:
+    restart: unless-stopped
+    container_name: booking-app
+    build:
+      context: ./booking-app
+      dockerfile: ../.docker/php/Dockerfile
+    ports:
+      - 5173:5173
+    volumes:
+      - ./booking-app:/var/www:cached
+      - ./.docker/php/php.ini:/usr/local/etc/php/php.ini
+    depends_on:
+      - mysql
+  ####################################################################################################
+  # Nginx
+  ####################################################################################################
+  nginx:
+    restart: unless-stopped
+    container_name: nginx
+    image: nginx
+    ports:
+      - 80:80
+    volumes:
+      - ./booking-app:/var/www
+      - ./.docker/nginx/conf.d:/etc/nginx/conf.d
+      - ./.docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./.docker/nginx/log:/var/log/nginx
+    depends_on:
+      - booking-app
+  ####################################################################################################
+  # DATABASE (MySQL)
+  ####################################################################################################
+  mysql:
+    restart: unless-stopped
+    container_name: mysql
+    image: mysql:8.1
+    ports:
+      - 3307:3306
+    volumes:
+      - ./.docker/mysql/sql:/docker-entrypoint-initdb.d
+      - ./.docker/mysql/data:/var/lib/mysql
+      - ./.docker/mysql/log:/var/log/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+  ####################################################################################################
+  # phpMyAdmin
+  ####################################################################################################
+  phpmyadmin:
+    restart: unless-stopped
+    container_name: phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - 8080:80
+    links:
+      - mysql
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+    volumes:
+      - ./.docker/phpmyadmin/sessions:/sessions
+    depends_on:
+      - mysql
