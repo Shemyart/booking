@@ -18,6 +18,7 @@ return new class extends Migration
             $table->timestamp('start_time');
             $table->timestamp('end_time');
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('resource_id')->references('id')->on('resources');
             $table->foreign('user_id')->references('id')->on('users');
