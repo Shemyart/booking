@@ -43,6 +43,9 @@ class BookingController
         $params = $request->validated();
 
         $resource = $this->resourceRepository->getById($params['resource_id']);
+        if(!$resource){
+            throw new ResourceException();
+        }
 
         $bookingService = new BookingService();
         $checkAvailiable = $bookingService->checkAvailiable($params);
