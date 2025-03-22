@@ -4,6 +4,7 @@ namespace App\Repositories\Eloquent;
 
 use App\Models\Resource;
 use App\Repositories\Interfaces\ResourceRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
 
 class ResourceRepository implements ResourceRepositoryInterface
 {
@@ -12,19 +13,19 @@ class ResourceRepository implements ResourceRepositoryInterface
          'bookings'
      ];
 
-     public function all()
+     public function all(): Collection
      {
          return Resource::all();
      }
 
-     public function getById($resourceId)
+     public function getById($resourceId): Resource
      {
          $query = Resource::query();
 
          return $query->findOrFail($resourceId);
      }
 
-     public function store($params)
+     public function store($params): Resource
      {
          return Resource::create($params);
      }
