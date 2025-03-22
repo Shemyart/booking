@@ -8,9 +8,10 @@ use App\Http\Resources\ResourceResource;
 use App\Repositories\Interfaces\BookingRepositoryInterface;
 use App\Repositories\Interfaces\ResourceRepositoryInterface;
 use Illuminate\Http\Resources\Json\ResourceCollection;
-use Illuminate\Support\Collection;
+use Knuckles\Scribe\Attributes\BodyParam;
 use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\ResponseField;
+use Knuckles\Scribe\Attributes\UrlParam;
 
 class ResourceController extends Controller
 {
