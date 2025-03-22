@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\BookingException;
+use App\Exceptions\ResourceException;
 use App\Http\Requests\BookingRequest;
 use App\Http\Resources\BookingResource;
 use App\Repositories\Interfaces\BookingRepositoryInterface;
 use App\Repositories\Interfaces\ResourceRepositoryInterface;
 use App\Services\BookingService;
-use Illuminate\Database\Eloquent\Casts\Json;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Knuckles\Scribe\Attributes\Endpoint;
 use Knuckles\Scribe\Attributes\Group;
@@ -43,6 +43,9 @@ class BookingController
         $params = $request->validated();
 
         $resource = $this->resourceRepository->getById($params['resource_id']);
+        if(!$resource){
+            throw new ResourceException();
+        }
 
         $bookingService = new BookingService();
         $checkAvailiable = $bookingService->checkAvailiable($params);
