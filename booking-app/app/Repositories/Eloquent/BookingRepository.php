@@ -4,6 +4,7 @@ namespace App\Repositories\Eloquent;
 
 use App\Models\Booking;
 use App\Repositories\Interfaces\BookingRepositoryInterface;
+use Illuminate\Support\Collection;
 
 class BookingRepository implements BookingRepositoryInterface
 {
@@ -12,14 +13,14 @@ class BookingRepository implements BookingRepositoryInterface
         'user',
     ];
 
-    public function destroy($bookingId)
+    public function all(): Collection
+    {
+        return Booking::with(self::ALL_RELATIONS)->get();
+    }
+
+    public function destroy($bookingId): bool
     {
         $booking = Booking::findOrFail($bookingId);
         return $booking->delete();
-    }
-
-    public function all()
-    {
-        return Booking::with(self::ALL_RELATIONS)->get();
     }
 }

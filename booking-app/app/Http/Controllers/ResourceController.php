@@ -7,8 +7,11 @@ use App\Http\Resources\BookingResource;
 use App\Http\Resources\ResourceResource;
 use App\Repositories\Interfaces\BookingRepositoryInterface;
 use App\Repositories\Interfaces\ResourceRepositoryInterface;
+use Illuminate\Http\Resources\Json\ResourceCollection;
+use Knuckles\Scribe\Attributes\BodyParam;
 use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\ResponseField;
+use Knuckles\Scribe\Attributes\UrlParam;
 
 class ResourceController extends Controller
 {
@@ -20,8 +23,8 @@ class ResourceController extends Controller
     }
 
     #[Group('Основные страницы')]
-    #[ResponseField('data', ResourceResource::class, required: true)]
-    public function index()
+    #[ResponseField('data', ResourceCollection::class, required: true)]
+    public function index(): ResourceCollection
     {
         $resources = $this->resourceRepository->all();
 
@@ -29,8 +32,11 @@ class ResourceController extends Controller
     }
 
     #[Group('Основные страницы')]
+    #[BodyParam('name', 'string', 'Название ресурса', required: true)]
+    #[BodyParam('type', 'string', 'Тип ресурса', required: true)]
+    #[BodyParam('description', 'string', 'Описание ресурса', required: true)]
     #[ResponseField('data', ResourceResource::class, required: true)]
-    public function store(ResourceRequest $request)
+    public function store(ResourceRequest $request): ResourceResource
     {
         $params = $request->validated();
 
@@ -40,8 +46,9 @@ class ResourceController extends Controller
     }
 
     #[Group('Основные страницы')]
-    #[ResponseField('data', BookingResource::class, required: true)]
-    public function bookings($id)
+    #[UrlParam('id', 'integer', 'ID ресурса', required: true)]
+    #[ResponseField('data', ResourceCollection::class, required: true)]
+    public function bookings($id): ResourceCollection
     {
         $resource = $this->resourceRepository->getById($id);
         return BookingResource::collection($resource->bookings);

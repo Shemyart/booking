@@ -14,10 +14,10 @@ class BookingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'resource_id' => 'required|exists:resources,id',
-            'user_id' => 'required|integer',
-            'start_time' => 'required|date',
-            'end_time' => 'required|date|after:start_time',
+            'resource_id'   => 'required|exists:resources,id',
+            'user_id'       => 'required|integer',
+            'start_time'    => 'required|date',
+            'end_time'      => 'required|date|after:start_time',
         ];
     }
 
